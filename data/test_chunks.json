@@ -1,0 +1,32 @@
+[
+  {
+    "id": "chunk_1",
+    "code": "def calculate_average(numbers):\n    return sum(numbers) / len(numbers)",
+    "language": "python",
+    "description": "Calculates the average of a list of numbers."
+  },
+  {
+    "id": "chunk_2",
+    "code": "def find_max(numbers):\n    return max(numbers)",
+    "language": "python",
+    "description": "Finds the maximum value in a list of numbers."
+  },
+  {
+    "id": "chunk_3",
+    "code": "def reverse_string(text):\n    return text[::-1]",
+    "language": "python",
+    "description": "Reverses a given string."
+  },
+  {
+    "id": "chunk_4",
+    "code": "def sort_numbers(numbers):\n    return sorted(numbers)",
+    "language": "python",
+    "description": "Sorts a list of numbers in ascending order."
+  },
+  {
+    "id": "chunk_5",
+    "code": "def count_words(text):\n    return len(text.split())",
+    "language": "python",
+    "description": "Counts the number of words in a text."
+  }
+]
