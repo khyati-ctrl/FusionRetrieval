@@ -33,7 +33,7 @@ from src.query.query_pipeline import QueryPipeline
 from src.query.benchmark import RetrievalBenchmark
 from src.query.load_mteb_eval_set_fixed import load_mteb_task, to_benchmark_eval_set, get_corpus_lookup
 
-MAX_QUERIES = 10          # how many labeled queries to evaluate on
+MAX_QUERIES = 30          # how many labeled queries to evaluate on (raised from 10 for a more reliable sample)
 CORPUS_SAMPLE_SIZE = 500  # how many corpus docs to embed (for speed on first run)
 MODEL_NAME = "all-MiniLM-L6-v2"  # small, fast, well-tested -- swap for EmbeddingGemma later
 
