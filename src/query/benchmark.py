@@ -56,12 +56,22 @@ def recall_at_k(ranked_ids: List[str], relevant_ids: set, k: int = 10) -> float:
 
 # --- RRF fusion (used by the "combined" strategy) --------------------------
 
-def reciprocal_rank_fusion(ranked_lists: List[List[str]], k: int = 60) -> List[str]:
-    """Standard RRF: score = sum over lists of 1 / (k + rank)."""
+def reciprocal_rank_fusion(ranked_lists: List[List[str]], k: int = 60,
+                            weights: List[float] = None) -> List[str]:
+    """
+    Weighted RRF: score = sum over lists of weight_i / (k + rank).
+    weights defaults to equal weighting (the original behavior) if not given.
+    Pass e.g. weights=[1.0, 1.0, 2.0] to trust the 3rd list (HyDE) twice as
+    much as the others -- use this when a benchmark run shows one view is
+    consistently stronger, so consensus among weaker views can't drown it out.
+    """
+    if weights is None:
+        weights = [1.0] * len(ranked_lists)
+
     scores: Dict[str, float] = defaultdict(float)
-    for ranked in ranked_lists:
+    for ranked, weight in zip(ranked_lists, weights):
         for rank, chunk_id in enumerate(ranked):
-            scores[chunk_id] += 1.0 / (k + rank + 1)
+            scores[chunk_id] += weight / (k + rank + 1)
     return [cid for cid, _ in sorted(scores.items(), key=lambda x: -x[1])]
 
 
@@ -72,10 +82,13 @@ SearchFn = Callable[["Any", int], List[str]]
 
 
 class RetrievalBenchmark:
-    def __init__(self, embed_fn: EmbedFn, search_fn: SearchFn, pipeline: QueryPipeline = None):
+    def __init__(self, embed_fn: EmbedFn, search_fn: SearchFn, pipeline: QueryPipeline = None,
+                 fusion_weights: List[float] = None):
         self.embed_fn = embed_fn
         self.search_fn = search_fn
         self.pipeline = pipeline or QueryPipeline()
+        # [original_weight, expanded_weight, hyde_weight]. None = equal weighting.
+        self.fusion_weights = fusion_weights
 
     def _search_view(self, text: str, k: int = 50) -> List[str]:
         vec = self.embed_fn(text)
@@ -88,7 +101,8 @@ class RetrievalBenchmark:
         results_expanded = self._search_view(mv.expanded)
         results_hyde = self._search_view(mv.hyde)
         results_combined = reciprocal_rank_fusion(
-            [results_original, results_expanded, results_hyde]
+            [results_original, results_expanded, results_hyde],
+            weights=self.fusion_weights,
         )
 
         strategies = {
