@@ -3,7 +3,7 @@ from src.retrieval.bm25 import BM25Retriever
 from src.retrieval.fusion import RRFFusion
 from src.retrieval.reranker import Reranker
 from src.retrieval.mmr import MMR
-
+from sentence_transformers import SentenceTransformer
 
 class RetrievalPipeline:
 
@@ -11,12 +11,15 @@ class RetrievalPipeline:
 
         self.documents = documents
 
-        self.dense = DenseRetriever()
+        embedding_model = SentenceTransformer(
+    "sentence-transformers/all-MiniLM-L6-v2"
+)
+
+        self.dense = DenseRetriever(embedding_model)
         self.bm25 = BM25Retriever(documents)
         self.fusion = RRFFusion()
         self.reranker = Reranker()
-        self.mmr = MMR()
-
+        self.mmr = MMR(embedding_model)
     def search(
         self,
         query_views,

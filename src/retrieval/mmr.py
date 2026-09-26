@@ -4,8 +4,10 @@ import numpy as np
 
 class MMR:
 
-    def __init__(self, model_name="sentence-transformers/all-MiniLM-L6-v2"):
-        self.model = SentenceTransformer(model_name)
+    def __init__(self, model=None):
+        self.model = model or SentenceTransformer(
+        "sentence-transformers/all-MiniLM-L6-v2"
+    )
 
     def select(self, query, results, top_k=10, lambda_param=0.7):
 
