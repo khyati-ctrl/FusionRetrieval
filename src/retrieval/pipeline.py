@@ -23,9 +23,9 @@ class RetrievalPipeline:
     def search(
         self,
         query_views,
-        rrf_top_k=5,
-        rerank_top_k=3,
-        final_top_k=2
+        rrf_top_k=50,
+        rerank_top_k=20,
+        final_top_k=10
     ):
 
         all_view_results = []
