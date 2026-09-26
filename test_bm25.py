@@ -1,6 +1,6 @@
 import json
 
-from src.retrieval.dense import DenseRetriever
+from src.retrieval.bm25 import BM25Retriever
 
 
 with open("data/test_chunks.json", "r") as file:
@@ -15,13 +15,12 @@ for chunk in chunks:
     )
 
 
-retriever = DenseRetriever()
+retriever = BM25Retriever(documents)
 
-query = "calculate the mean of several values"
+query = "average"
 
 results = retriever.search(
     query,
-    documents,
     top_k=5
 )
 
