@@ -1,14 +1,37 @@
-queries = [
-    "find code that calculates the mean of numbers",
-    "find the maximum number",
-    "reverse a string",
-    "sort numbers",
-    "count words in text"
+import json
+
+from src.query.query_pipeline import QueryPipeline
+from src.retrieval.pipeline import RetrievalPipeline
+
+
+# Load Member 1's real chunks
+chunks = []
+
+with open("data/chunks/chunks.jsonl", "r") as file:
+    for line in file:
+        chunks.append(json.loads(line))
+
+
+# Use augmented_text as the retrieval document
+documents = [
+    chunk["augmented_text"]
+    for chunk in chunks
 ]
 
 
+# Query pipeline
 query_pipeline = QueryPipeline()
+
+# Retrieval pipeline
 retrieval_pipeline = RetrievalPipeline(documents)
+
+
+queries = [
+    "find code that calculates the total",
+    "find code that verifies a token",
+    "find code that logs out a user",
+    "find code that normalizes text"
+]
 
 
 for query in queries:
